@@ -14,6 +14,10 @@ public class CustomerService {
 
     public CustomerService(CustomerRepository customerRepository) {
         this.customerRepository=customerRepository;
+
+//        මේක Dependency Injection.
+//        Spring Boot එක automatically CustomerRepository object එක මෙතනට pass කරනවා.
+
     }
 
     public Customer saveCustomer(Customer customer) {
@@ -29,7 +33,11 @@ public class CustomerService {
     }
 
     public void deleteCustomer(String id) {
-        customerRepository.deleteById(id);
+
+        Customer existingCustomer = customerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        customerRepository.delete(existingCustomer);
     }
 
 //    public Customer updateCustomer(String id, Customer customer) {

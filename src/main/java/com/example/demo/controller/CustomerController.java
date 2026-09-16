@@ -62,3 +62,16 @@ So our base URL is:
 
 http://localhost:8080/api/customers
  */
+
+
+
+
+/*
+Controller
+    ↓
+CustomerService
+    ↓
+CustomerRepository
+    ↓
+MySQL Database
+*/
