@@ -26,5 +26,10 @@ public class ItemController {
     public Optional<Item> findItemById(@PathVariable String id) {
         return itemService.findItemById(id);
     }
+
+    @GetMapping
+    public List<Item> findAllItems() {
+        return itemService.findAllItems();
+    }
 }
 
