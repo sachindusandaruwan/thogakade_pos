@@ -31,5 +31,11 @@ public class ItemController {
     public List<Item> findAllItems() {
         return itemService.findAllItems();
     }
+
+    @DeleteMapping("/{id}")
+    public String deleteItem(@PathVariable String id) {
+         itemService.deleteItem(id);
+         return "item deleted successfully";
+    }
 }
 

@@ -27,4 +27,11 @@ public class ItemService {
    public List<Item> findAllItems() {
         return itemRepository.findAll();
    }
+
+   public void deleteItem(String id) {
+       Item existingItem=itemRepository.findById(id)
+               .orElseThrow(() -> new RuntimeException("Item not found"));
+
+       itemRepository.delete(existingItem);
+   }
 }
