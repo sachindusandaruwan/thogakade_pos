@@ -4,6 +4,8 @@ import com.example.demo.entity.Item;
 import com.example.demo.repository.ItemRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ItemService {
     private final ItemRepository itemRepository;
@@ -15,4 +17,10 @@ public class ItemService {
     public Item saveItem(Item item) {
         return itemRepository.save(item);
     }
+
+   public Optional<Item> findItemById(String id) {
+        return itemRepository.findById(id);
+   }
+
+
 }
