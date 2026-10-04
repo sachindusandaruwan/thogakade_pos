@@ -34,4 +34,16 @@ public class ItemService {
 
        itemRepository.delete(existingItem);
    }
+
+   public Item updateItem(String id, Item item) {
+        Item existingItem=itemRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Item not found"));
+
+       System.out.println(existingItem);
+       existingItem.setItemName(item.getItemName());
+       existingItem.setQuantity(item.getQuantity());
+       existingItem.setPrice(item.getPrice());
+
+       return itemRepository.save(existingItem);
+   }
 }

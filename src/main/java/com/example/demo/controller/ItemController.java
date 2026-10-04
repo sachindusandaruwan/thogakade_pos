@@ -37,5 +37,10 @@ public class ItemController {
          itemService.deleteItem(id);
          return "item deleted successfully";
     }
+
+    @PutMapping("/{id}")
+    public Item updateItem(@PathVariable String id, @RequestBody Item item) {
+        return itemService.updateItem(id,item);
+    }
 }
 
