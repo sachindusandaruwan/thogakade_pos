@@ -1,11 +1,12 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.CustomerDTO;
 import com.example.demo.entity.Customer;
 import com.example.demo.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomerService {
@@ -13,47 +14,86 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
 
     public CustomerService(CustomerRepository customerRepository) {
-        this.customerRepository=customerRepository;
-
-//        මේක Dependency Injection.
-//        Spring Boot එක automatically CustomerRepository object එක මෙතනට pass කරනවා.
-
+        this.customerRepository = customerRepository;
     }
 
-    public Customer saveCustomer(Customer customer) {
-        return customerRepository.save(customer);
+    // Save Customer
+    public CustomerDTO saveCustomer(CustomerDTO dto) {
+
+        Customer customer = new Customer();
+
+        customer.setId(dto.getId());
+        customer.setName(dto.getName());
+        customer.setAddress(dto.getAddress());
+        customer.setPhone(dto.getPhone());
+
+        Customer savedCustomer = customerRepository.save(customer);
+
+        return new CustomerDTO(
+                savedCustomer.getId(),
+                savedCustomer.getName(),
+                savedCustomer.getAddress(),
+                savedCustomer.getPhone()
+        );
     }
 
-    public List<Customer> getAllCustomers() {
-        return customerRepository.findAll();
+    // Get All Customers
+    public List<CustomerDTO> getAllCustomers() {
+
+        return customerRepository.findAll()
+                .stream()
+                .map(customer -> new CustomerDTO(
+                        customer.getId(),
+                        customer.getName(),
+                        customer.getAddress(),
+                        customer.getPhone()
+                ))
+                .collect(Collectors.toList());
     }
 
-    public Optional<Customer> getCustomer(String id) {
-        return customerRepository.findById(id);
+    // Get Customer By ID
+    public CustomerDTO getCustomerById(String id) {
+
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Customer not found"));
+
+        return new CustomerDTO(
+                customer.getId(),
+                customer.getName(),
+                customer.getAddress(),
+                customer.getPhone()
+        );
     }
 
+    // Update Customer
+    public CustomerDTO updateCustomer(String id, CustomerDTO dto) {
+
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Customer not found"));
+
+        customer.setName(dto.getName());
+        customer.setAddress(dto.getAddress());
+        customer.setPhone(dto.getPhone());
+
+        Customer updatedCustomer = customerRepository.save(customer);
+
+        return new CustomerDTO(
+                updatedCustomer.getId(),
+                updatedCustomer.getName(),
+                updatedCustomer.getAddress(),
+                updatedCustomer.getPhone()
+        );
+    }
+
+    // Delete Customer
     public void deleteCustomer(String id) {
 
-        Customer existingCustomer = customerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+        if (!customerRepository.existsById(id)) {
+            throw new RuntimeException("Customer not found");
+        }
 
-        customerRepository.delete(existingCustomer);
-    }
-
-//    public Customer updateCustomer(String id, Customer customer) {
-//        return customerRepository.save(customer);
-//    }
-
-    public Customer updateCustomer(String id, Customer customer) {
-
-        Customer existingCustomer = customerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
-
-        System.out.println(existingCustomer);
-        existingCustomer.setName(customer.getName());
-        existingCustomer.setAddress(customer.getAddress());
-        existingCustomer.setPhone(customer.getPhone());
-
-        return customerRepository.save(existingCustomer);
+        customerRepository.deleteById(id);
     }
 }

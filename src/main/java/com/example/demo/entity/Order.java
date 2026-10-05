@@ -1,10 +1,8 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -19,6 +17,8 @@ public class Order {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+    @OneToMany(mappedBy = "order")
+    private List<OrderItemDetails> orderItemDetails;
 
     public Order() {
 
@@ -55,5 +55,12 @@ public class Order {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+    public List<OrderItemDetails> getOrderItemDetails() {
+        return orderItemDetails;
+    }
+
+    public void setOrderItemDetails(List<OrderItemDetails> orderItemDetails) {
+        this.orderItemDetails = orderItemDetails;
     }
 }

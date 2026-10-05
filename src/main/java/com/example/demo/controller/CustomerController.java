@@ -1,11 +1,10 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Customer;
+import com.example.demo.dto.CustomerDTO;
 import com.example.demo.service.CustomerService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/customers")
@@ -17,27 +16,34 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
-    // CREATE
+    // Save Customer
     @PostMapping
-    public Customer saveCustomer(@RequestBody Customer customer) {
-        System.out.println(customer);
-        return customerService.saveCustomer(customer);
+    public CustomerDTO saveCustomer(@RequestBody CustomerDTO dto) {
+        return customerService.saveCustomer(dto);
     }
 
-    // GET ALL
+    // Get All Customers
     @GetMapping
-    public List<Customer> getAllCustomers() {
-        System.out.println("ggggg");
+    public List<CustomerDTO> getAllCustomers() {
         return customerService.getAllCustomers();
     }
 
-    // GET ONE
+    // Get Customer By ID
     @GetMapping("/{id}")
-    public Optional<Customer> getCustomerById(@PathVariable String id) {
-        return customerService.getCustomer(id);
+    public CustomerDTO getCustomerById(@PathVariable String id) {
+        return customerService.getCustomerById(id);
     }
 
-    // DELETE
+    // Update Customer
+    @PutMapping("/{id}")
+    public CustomerDTO updateCustomer(
+            @PathVariable String id,
+            @RequestBody CustomerDTO dto) {
+
+        return customerService.updateCustomer(id, dto);
+    }
+
+    // Delete Customer
     @DeleteMapping("/{id}")
     public String deleteCustomer(@PathVariable String id) {
 
@@ -45,34 +51,4 @@ public class CustomerController {
 
         return "Customer deleted successfully";
     }
-
-    @PutMapping("/{id}")
-    public Customer updateCustomer(@PathVariable String id, @RequestBody Customer customer) {
-
-        return customerService.updateCustomer(id,customer);
-    }
-
 }
-
-
-
-/*
-@RequestMapping("/api/customers")
-
-So our base URL is:
-
-http://localhost:8080/api/customers
- */
-
-
-
-
-/*
-Controller
-    ↓
-CustomerService
-    ↓
-CustomerRepository
-    ↓
-MySQL Database
-*/

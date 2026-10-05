@@ -1,49 +1,99 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.ItemDTO;
 import com.example.demo.entity.Item;
 import com.example.demo.repository.ItemRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
+
     private final ItemRepository itemRepository;
 
     public ItemService(ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
     }
 
-    public Item saveItem(Item item) {
-        return itemRepository.save(item);
+    // Save Item
+    public ItemDTO saveItem(ItemDTO dto) {
+
+        Item item = new Item();
+
+        item.setItemId(dto.getItemId());
+        item.setItemName(dto.getItemName());
+        item.setQuantity(dto.getQuantity());
+        item.setPrice(dto.getPrice());
+
+        Item savedItem = itemRepository.save(item);
+
+        return new ItemDTO(
+                savedItem.getItemId(),
+                savedItem.getItemName(),
+                savedItem.getQuantity(),
+                savedItem.getPrice()
+        );
     }
 
-   public Optional<Item> findItemById(String id) {
-        return itemRepository.findById(id);
-   }
+    // Get All Items
+    public List<ItemDTO> getAllItems() {
 
+        return itemRepository.findAll()
+                .stream()
+                .map(item -> new ItemDTO(
+                        item.getItemId(),
+                        item.getItemName(),
+                        item.getQuantity(),
+                        item.getPrice()
+                ))
+                .collect(Collectors.toList());
+    }
 
-   public List<Item> findAllItems() {
-        return itemRepository.findAll();
-   }
+    // Get Item By ID
+    public ItemDTO getItemById(String itemId) {
 
-   public void deleteItem(String id) {
-       Item existingItem=itemRepository.findById(id)
-               .orElseThrow(() -> new RuntimeException("Item not found"));
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() ->
+                        new RuntimeException("Item not found"));
 
-       itemRepository.delete(existingItem);
-   }
+        return new ItemDTO(
+                item.getItemId(),
+                item.getItemName(),
+                item.getQuantity(),
+                item.getPrice()
+        );
+    }
 
-   public Item updateItem(String id, Item item) {
-        Item existingItem=itemRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Item not found"));
+    // Update Item
+    public ItemDTO updateItem(String itemId, ItemDTO dto) {
 
-       System.out.println(existingItem);
-       existingItem.setItemName(item.getItemName());
-       existingItem.setQuantity(item.getQuantity());
-       existingItem.setPrice(item.getPrice());
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() ->
+                        new RuntimeException("Item not found"));
 
-       return itemRepository.save(existingItem);
-   }
+        item.setItemName(dto.getItemName());
+        item.setQuantity(dto.getQuantity());
+        item.setPrice(dto.getPrice());
+
+        Item updatedItem = itemRepository.save(item);
+
+        return new ItemDTO(
+                updatedItem.getItemId(),
+                updatedItem.getItemName(),
+                updatedItem.getQuantity(),
+                updatedItem.getPrice()
+        );
+    }
+
+    // Delete Item
+    public void deleteItem(String itemId) {
+
+        if (!itemRepository.existsById(itemId)) {
+            throw new RuntimeException("Item not found");
+        }
+
+        itemRepository.deleteById(itemId);
+    }
 }

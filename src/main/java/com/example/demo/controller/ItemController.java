@@ -1,46 +1,54 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Item;
+import com.example.demo.dto.ItemDTO;
 import com.example.demo.service.ItemService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/item")
+@RequestMapping("/api/items")
 public class ItemController {
 
-    private ItemService itemService;
+    private final ItemService itemService;
 
     public ItemController(ItemService itemService) {
         this.itemService = itemService;
     }
 
+    // Save Item
     @PostMapping
-    public Item SaveItem(@RequestBody Item item) {
-        return itemService.saveItem(item);
+    public ItemDTO saveItem(@RequestBody ItemDTO dto) {
+        return itemService.saveItem(dto);
     }
 
-    @GetMapping("/{id}")
-    public Optional<Item> findItemById(@PathVariable String id) {
-        return itemService.findItemById(id);
-    }
-
+    // Get All Items
     @GetMapping
-    public List<Item> findAllItems() {
-        return itemService.findAllItems();
+    public List<ItemDTO> getAllItems() {
+        return itemService.getAllItems();
     }
 
+    // Get Item By ID
+    @GetMapping("/{id}")
+    public ItemDTO getItemById(@PathVariable String id) {
+        return itemService.getItemById(id);
+    }
+
+    // Update Item
+    @PutMapping("/{id}")
+    public ItemDTO updateItem(
+            @PathVariable String id,
+            @RequestBody ItemDTO dto) {
+
+        return itemService.updateItem(id, dto);
+    }
+
+    // Delete Item
     @DeleteMapping("/{id}")
     public String deleteItem(@PathVariable String id) {
-         itemService.deleteItem(id);
-         return "item deleted successfully";
-    }
 
-    @PutMapping("/{id}")
-    public Item updateItem(@PathVariable String id, @RequestBody Item item) {
-        return itemService.updateItem(id,item);
+        itemService.deleteItem(id);
+
+        return "Item deleted successfully";
     }
 }
-

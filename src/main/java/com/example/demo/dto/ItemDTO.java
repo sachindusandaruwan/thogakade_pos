@@ -1,37 +1,26 @@
-package com.example.demo.entity;
+package com.example.demo.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+public class ItemDTO {
 
-import java.util.List;
-
-@Entity
-@Table(name = "item")
-public class Item {
-
-    @Id
     private String itemId;
     private String itemName;
     private int quantity;
     private double price;
 
-    @OneToMany(mappedBy = "item")
-    private List<OrderItemDetails> orderItemDetails;
-
-    public Item(){
-
+    public ItemDTO() {
     }
-    public Item(String itemId, String itemName, int quantity, double price) {
+
+    public ItemDTO(String itemId, String itemName, int quantity, double price) {
         this.itemId = itemId;
         this.itemName = itemName;
         this.quantity = quantity;
         this.price = price;
     }
+
     public String getItemId() {
         return itemId;
     }
+
     public void setItemId(String itemId) {
         this.itemId = itemId;
     }
@@ -39,6 +28,7 @@ public class Item {
     public String getItemName() {
         return itemName;
     }
+
     public void setItemName(String itemName) {
         this.itemName = itemName;
     }
@@ -46,6 +36,7 @@ public class Item {
     public int getQuantity() {
         return quantity;
     }
+
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
@@ -53,8 +44,8 @@ public class Item {
     public double getPrice() {
         return price;
     }
+
     public void setPrice(double price) {
         this.price = price;
     }
-
 }
