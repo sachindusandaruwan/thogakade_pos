@@ -2,10 +2,10 @@ package com.example.demo.service;
 
 import com.example.demo.dto.OrderDTO;
 import com.example.demo.entity.Customer;
-import com.example.demo.entity.Order;
 import com.example.demo.repository.CustomerRepository;
 import com.example.demo.repository.OrderRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,19 +25,20 @@ public class OrderService {
     }
 
     // Save Order
+    @Transactional
     public OrderDTO saveOrder(OrderDTO dto) {
 
         Customer customer = customerRepository.findById(dto.getCustomerId())
                 .orElseThrow(() ->
                         new RuntimeException("Customer not found"));
 
-        Order order = new Order();
+        var order = new com.example.demo.entity.Order();
 
         order.setOrderId(dto.getOrderId());
         order.setTotal(dto.getTotal());
         order.setCustomer(customer);
 
-        Order savedOrder = orderRepository.save(order);
+        var savedOrder = orderRepository.save(order);
 
         return new OrderDTO(
                 savedOrder.getOrderId(),
@@ -62,7 +63,7 @@ public class OrderService {
     // Get Order By ID
     public OrderDTO getOrderById(String orderId) {
 
-        Order order = orderRepository.findById(orderId)
+        var order = orderRepository.findById(orderId)
                 .orElseThrow(() ->
                         new RuntimeException("Order not found"));
 
@@ -76,7 +77,7 @@ public class OrderService {
     // Update Order
     public OrderDTO updateOrder(String orderId, OrderDTO dto) {
 
-        Order order = orderRepository.findById(orderId)
+        var order = orderRepository.findById(orderId)
                 .orElseThrow(() ->
                         new RuntimeException("Order not found"));
 
@@ -87,7 +88,7 @@ public class OrderService {
         order.setTotal(dto.getTotal());
         order.setCustomer(customer);
 
-        Order updatedOrder = orderRepository.save(order);
+        var updatedOrder = orderRepository.save(order);
 
         return new OrderDTO(
                 updatedOrder.getOrderId(),
