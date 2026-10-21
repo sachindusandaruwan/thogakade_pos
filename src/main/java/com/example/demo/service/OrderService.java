@@ -2,7 +2,9 @@ package com.example.demo.service;
 
 import com.example.demo.dto.OrderDTO;
 import com.example.demo.entity.Customer;
+import com.example.demo.entity.Order;
 import com.example.demo.repository.CustomerRepository;
+import com.example.demo.repository.OrderItemDetailsRepository;
 import com.example.demo.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,13 +17,16 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
+    private final OrderItemDetailsRepository orderItemDetailsRepository;
 
     public OrderService(
             OrderRepository orderRepository,
-            CustomerRepository customerRepository) {
+            CustomerRepository customerRepository,
+            OrderItemDetailsRepository orderItemDetailsRepository) {
 
         this.orderRepository = orderRepository;
         this.customerRepository = customerRepository;
+        this.orderItemDetailsRepository = orderItemDetailsRepository;
     }
 
     // Save Order
@@ -98,12 +103,15 @@ public class OrderService {
     }
 
     // Delete Order
+    @Transactional
     public void deleteOrder(String orderId) {
 
-        if (!orderRepository.existsById(orderId)) {
-            throw new RuntimeException("Order not found");
-        }
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() ->
+                        new RuntimeException("Order not found: " + orderId));
 
-        orderRepository.deleteById(orderId);
+        orderItemDetailsRepository.deleteByOrder_OrderId(orderId);
+
+        orderRepository.delete(order);
     }
 }
